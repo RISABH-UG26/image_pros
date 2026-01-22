@@ -1,25 +1,23 @@
-# 🖼️ FPGA Image Processing Accelerator
+# FPGA Image Processing Accelerator
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![FPGA: Zynq-7020](https://img.shields.io/badge/FPGA-Zynq--7020-blue)](https://www.xilinx.com/products/boards-and-kits/1-elhabt.html)
 [![Tool: Vitis HLS](https://img.shields.io/badge/Tool-Vitis%20HLS-orange)](https://www.xilinx.com/products/design-tools/vitis.html)
 
-> Hardware accelerator for real-time image processing on Xilinx Zynq-7020 FPGA using bare-metal MicroBlaze control.
+Hardware accelerator for real-time image processing on Xilinx Zynq-7020 FPGA using bare-metal MicroBlaze control.
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
 - [SoC Architecture](#soc-architecture)
-- [Supported Filters](#supported-filters)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
 - [Build Instructions](#build-instructions)
 - [Performance](#performance)
 - [Technical Details](#technical-details)
-- [License](#license)
 
 ---
 
@@ -33,21 +31,21 @@ This project implements a **hardware-accelerated image processing pipeline** on 
 - **AXI-Lite** for register-based control
 
 **Key Highlights:**
-- ⚡ Real-time processing at **325+ FPS** (640×480)
-- 🔧 7 selectable filter modes via software
-- 📦 Fully synthesizable and deployable bitstream included
+- Real-time processing at **325+ FPS** (640x480)
+- 7 selectable filter modes via software
+- Fully synthesizable and deployable bitstream included
 
 ---
 
 ## Features
 
 | Filter | Mode | Description |
-|:-------|:----:|:------------|
+|--------|:----:|-------------|
 | Bypass | 0 | Pass-through (no processing) |
 | Grayscale | 1 | RGB to grayscale conversion |
-| **Sobel** | 2 | Edge detection (3×3 convolution) |
+| **Sobel** | 2 | Edge detection (3x3 convolution) |
 | Threshold | 3 | Binary thresholding |
-| Gaussian | 4 | 3×3 Gaussian blur |
+| Gaussian | 4 | 3x3 Gaussian blur |
 | Negative | 5 | Image inversion (255 - pixel) |
 | Sharpen | 6 | Image sharpening |
 
@@ -59,81 +57,46 @@ The complete System-on-Chip block design integrating MicroBlaze, Image Processin
 
 ![SoC Block Design](docs/images/soc_block_design-1.png)
 
-<details>
-<summary><b>📐 Architecture Diagram (Text)</b></summary>
-
-\`\`\`
-┌─────────────────────────────────────────────────────────────┐
-│                     FPGA (Zynq-7020)                        │
-│                                                             │
-│  ┌──────────────┐    ┌─────────────────────────────────┐   │
-│  │  MicroBlaze  │    │   Image Processing IP (HLS)     │   │
-│  │  (Control)   │    │                                 │   │
-│  │              │    │  ┌─────────┐   ┌────────────┐  │   │
-│  │  - Filter    │───▶│  │  Line   │──▶│ Convolution│  │   │
-│  │    Select    │    │  │ Buffers │   │   Engine   │  │   │
-│  │  - Start/    │    │  └─────────┘   └────────────┘  │   │
-│  │    Stop      │    │       │              │         │   │
-│  │  - Params    │    │       ▼              ▼         │   │
-│  └──────────────┘    │  ┌─────────────────────────┐   │   │
-│         │            │  │   Filter Selection      │   │   │
-│         │            │  │   (Sobel/Gauss/etc)     │   │   │
-│         ▼            │  └─────────────────────────┘   │   │
-│  ┌──────────────┐    │              │                 │   │
-│  │   AXI-Lite   │◀───│──────────────┘                 │   │
-│  │  Interconnect│    └─────────────────────────────────┘   │
-│  └──────────────┘                   │                      │
-│         │                           │                      │
-│         ▼                           ▼                      │
-│  ┌──────────────┐           ┌──────────────┐              │
-│  │     BRAM     │           │  AXI-Stream  │              │
-│  │ (Image Data) │◀─────────▶│  Interface   │              │
-│  └──────────────┘           └──────────────┘              │
-└─────────────────────────────────────────────────────────────┘
-\`\`\`
-
-</details>
-
 ---
 
 ## Project Structure
 
-\`\`\`
+```
 image_pros/
-├── 📁 src/                          # HLS Source Code
+├── src/                             # HLS Source Code
 │   ├── image_processing.h           # Header with types and constants
 │   ├── image_processing.cpp         # Main HLS implementation
 │   └── testbench.cpp                # C simulation testbench
 │
-├── 📁 sw/                           # Standalone Software
+├── sw/                              # Standalone Software
 │   └── main.c                       # MicroBlaze bare-metal app
 │
-├── 📁 image_process_sw/             # Vitis Application Project
+├── image_process_sw/                # Vitis Application Project
 │   └── src/main.c                   # Application source
 │
-├── 📁 image_process_platform/       # Vitis Platform
+├── image_process_platform/          # Vitis Platform
 │   ├── hw/                          # Hardware files (XSA, bitstream)
-│   │   ├── image_process.xsa        # Hardware specification
-│   │   ├── image_process.bit        # FPGA bitstream
-│   │   └── drivers/                 # HLS IP drivers
-│   └── platform.tcl                 # Platform configuration
+│   │   ├── image_process.xsa
+│   │   ├── image_process.bit
+│   │   └── drivers/
+│   └── platform.tcl
 │
-├── 📁 image_proscess/               # Vivado Project
-│   ├── image_proscess.xpr           # Vivado project file
-│   └── image_proscess.srcs/         # Block design sources
+├── image_proscess/                  # Vivado Project
+│   ├── image_proscess.xpr
+│   └── image_proscess.srcs/
 │
-├── 📁 solution1/                    # HLS Solution
-│   ├── syn/report/                  # Synthesis reports
-│   └── impl/ip/                     # Exported IP
+├── solution1/                       # HLS Solution
+│   ├── syn/report/
+│   └── impl/ip/
 │
-├── 📁 docs/                         # Documentation
-│   └── images/                      # Architecture diagrams
+├── docs/                            # Documentation
+│   └── images/
 │
 ├── constraints.xdc                  # FPGA pin constraints
 ├── run_hls.tcl                      # Vitis HLS build script
 ├── vivado_block_design.tcl          # Vivado automation script
 └── output.bit                       # Final bitstream
-\`\`\`
+```
 
 ---
 
@@ -148,9 +111,9 @@ image_pros/
 
 ### Quick Start
 
-\`\`\`bash
+```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/image_pros.git
+git clone https://github.com/RISABH-UG26/image_pros.git
 cd image_pros
 
 # Run HLS synthesis
@@ -158,7 +121,7 @@ vitis_hls -f run_hls.tcl
 
 # Open Vivado and source the block design
 vivado -source vivado_block_design.tcl
-\`\`\`
+```
 
 ---
 
@@ -166,30 +129,30 @@ vivado -source vivado_block_design.tcl
 
 ### Step 1: HLS Synthesis
 
-\`\`\`bash
+```bash
 vitis_hls -f run_hls.tcl
-\`\`\`
+```
 
 This runs:
-1. ✅ C Simulation
-2. ✅ C Synthesis → RTL
-3. ✅ Co-simulation
-4. ✅ IP Export
+1. C Simulation
+2. C Synthesis to RTL
+3. Co-simulation
+4. IP Export
 
 ### Step 2: Vivado Block Design
 
-\`\`\`tcl
+```tcl
 # In Vivado Tcl Console
 source vivado_block_design.tcl
-\`\`\`
+```
 
 Then run: **Synthesis → Implementation → Generate Bitstream**
 
 ### Step 3: Software Application
 
 1. Open **Vitis IDE**
-2. Import platform from \`image_process_platform/\`
-3. Create application from \`image_process_sw/\`
+2. Import platform from `image_process_platform/`
+3. Create application from `image_process_sw/`
 4. Build and deploy to hardware
 
 ---
@@ -199,7 +162,7 @@ Then run: **Synthesis → Implementation → Generate Bitstream**
 ### Resource Utilization
 
 | Resource | Usage | Available | Utilization |
-|:---------|------:|----------:|:-----------:|
+|----------|------:|----------:|:-----------:|
 | LUT      | ~2,500 | 53,200   | 4.7% |
 | FF       | ~1,800 | 106,400  | 1.7% |
 | BRAM     | 4      | 140      | 2.9% |
@@ -208,11 +171,11 @@ Then run: **Synthesis → Implementation → Generate Bitstream**
 ### Timing Performance
 
 | Metric | Value |
-|:-------|------:|
+|--------|------:|
 | Clock Frequency | 100 MHz |
 | Throughput | 1 pixel/cycle |
 | Latency | ~3 line delays |
-| Max Frame Rate | **325 FPS** @ 640×480 |
+| Max Frame Rate | **325 FPS** @ 640x480 |
 
 ---
 
@@ -221,7 +184,7 @@ Then run: **Synthesis → Implementation → Generate Bitstream**
 ### AXI4-Stream Interface
 
 | Signal | Direction | Width | Description |
-|:-------|:---------:|:-----:|:------------|
+|--------|:---------:|:-----:|-------------|
 | TDATA  | In/Out | 8-bit | Pixel data |
 | TVALID | In/Out | 1-bit | Data valid |
 | TREADY | In/Out | 1-bit | Ready to receive |
@@ -231,67 +194,55 @@ Then run: **Synthesis → Implementation → Generate Bitstream**
 ### Sobel Edge Detection
 
 **Horizontal Kernel (Gx):**
-\`\`\`
-│-1  0  1│
-│-2  0  2│
-│-1  0  1│
-\`\`\`
+```
+|-1  0  1|
+|-2  0  2|
+|-1  0  1|
+```
 
 **Vertical Kernel (Gy):**
-\`\`\`
-│-1 -2 -1│
-│ 0  0  0│
-│ 1  2  1│
-\`\`\`
+```
+|-1 -2 -1|
+| 0  0  0|
+| 1  2  1|
+```
 
-**Output:** \`Gradient = |Gx| + |Gy|\` (saturated to 0-255)
+**Output:** `Gradient = |Gx| + |Gy|` (saturated to 0-255)
 
 ### Line Buffer Implementation
 
-For 3×3 convolution on a 640-pixel wide image:
-- 2 line buffers × 640 pixels = **1,280 bytes**
-- Enables accessing 3×3 pixel neighborhood in a single cycle
+For 3x3 convolution on a 640-pixel wide image:
+- 2 line buffers x 640 pixels = **1,280 bytes**
+- Enables accessing 3x3 pixel neighborhood in a single cycle
 
 ---
 
-## 🎓 Educational Notes
+## Educational Notes
 
-<details>
-<summary><b>Why FPGA over CPU?</b></summary>
+### Why FPGA over CPU?
 
-FPGAs enable **parallel processing** - all pixels in the pipeline are processed simultaneously, achieving >100× speedup over sequential CPU processing.
-</details>
+FPGAs enable **parallel processing** - all pixels in the pipeline are processed simultaneously, achieving >100x speedup over sequential CPU processing.
 
-<details>
-<summary><b>Why AXI4-Stream?</b></summary>
+### Why AXI4-Stream?
 
 - No address overhead for streaming data
 - Built-in handshaking (TVALID/TREADY) prevents data loss
 - TLAST marks row boundaries for synchronization
 - Industry standard for video IP cores
-</details>
 
-<details>
-<summary><b>What is Initiation Interval (II)?</b></summary>
+### What is Initiation Interval (II)?
 
 With **II=1**, we accept a new pixel every clock cycle, achieving maximum throughput of 100M pixels/second at 100 MHz.
-</details>
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Xilinx for Vitis HLS and Vivado tools
 - Course instructors for guidance on FPGA design
-
----
-
-<p align="center">
-  <i>Built with ❤️ for FPGA learning</i>
-</p>
