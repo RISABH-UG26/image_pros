@@ -1,0 +1,177 @@
+
+
+================================================================
+== Synthesis Summary Report of 'image_pros'
+================================================================
++ General Information: 
+    * Date:           Thu Jan 22 13:03:23 2026
+    * Version:        2022.2 (Build 3670227 on Oct 13 2022)
+    * Project:        image_pros
+    * Solution:       solution1 (Vivado IP Flow Target)
+    * Product family: zynq
+    * Target device:  xc7z020-clg400-1
+    
+
++ Performance & Resource Estimates: 
+    
+    PS: '+' for module; 'o' for loop; '*' for dataflow
+    +------------------------------------------+------+-------+---------+-----------+----------+---------+--------+----------+---------+---------+-----------+----------+-----+
+    |                  Modules                 | Issue|       | Latency |  Latency  | Iteration|         |  Trip  |          |         |         |           |          |     |
+    |                  & Loops                 | Type | Slack | (cycles)|    (ns)   |  Latency | Interval|  Count | Pipelined|  BRAM   |   DSP   |     FF    |    LUT   | URAM|
+    +------------------------------------------+------+-------+---------+-----------+----------+---------+--------+----------+---------+---------+-----------+----------+-----+
+    |+ image_pros                              |     -|   2.81|   307208|  6.144e+06|         -|   307209|       -|        no|  2 (~0%)|  1 (~0%)|  329 (~0%)|  976 (1%)|    -|
+    | + image_pros_Pipeline_ROW_LOOP_COL_LOOP  |     -|   2.81|   307203|  6.144e+06|         -|   307203|       -|        no|  2 (~0%)|        -|  138 (~0%)|  737 (1%)|    -|
+    |  o ROW_LOOP_COL_LOOP                     |     -|  19.50|   307201|  6.144e+06|         2|        1|  307200|       yes|        -|        -|          -|         -|    -|
+    +------------------------------------------+------+-------+---------+-----------+----------+---------+--------+----------+---------+---------+-----------+----------+-----+
+
+
+================================================================
+== HW Interfaces
+================================================================
+* S_AXILITE Interfaces
++---------------+------------+---------------+--------+----------+
+| Interface     | Data Width | Address Width | Offset | Register |
++---------------+------------+---------------+--------+----------+
+| s_axi_control | 32         | 6             | 16     | 0        |
++---------------+------------+---------------+--------+----------+
+
+* S_AXILITE Registers
++---------------+---------------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+| Interface     | Register      | Offset | Width | Access | Description                      | Bit Fields                                                           |
++---------------+---------------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+| s_axi_control | CTRL          | 0x00   | 32    | RW     | Control signals                  | 0=AP_START 1=AP_DONE 2=AP_IDLE 3=AP_READY 7=AUTO_RESTART 9=INTERRUPT |
+| s_axi_control | GIER          | 0x04   | 32    | RW     | Global Interrupt Enable Register | 0=Enable                                                             |
+| s_axi_control | IP_IER        | 0x08   | 32    | RW     | IP Interrupt Enable Register     | 0=CHAN0_INT_EN 1=CHAN1_INT_EN                                        |
+| s_axi_control | IP_ISR        | 0x0c   | 32    | RW     | IP Interrupt Status Register     | 0=CHAN0_INT_ST 1=CHAN1_INT_ST                                        |
+| s_axi_control | filter_select | 0x10   | 32    | W      | Data signal of filter_select     |                                                                      |
+| s_axi_control | threshold_val | 0x18   | 32    | W      | Data signal of threshold_val     |                                                                      |
+| s_axi_control | width         | 0x20   | 32    | W      | Data signal of width             |                                                                      |
+| s_axi_control | height        | 0x28   | 32    | W      | Data signal of height            |                                                                      |
++---------------+---------------+--------+-------+--------+----------------------------------+----------------------------------------------------------------------+
+
+* AXIS
++-----------+---------------+-------+-------+-----+-------+-------+--------+-------+-------+--------+
+| Interface | Register Mode | TDATA | TDEST | TID | TKEEP | TLAST | TREADY | TSTRB | TUSER | TVALID |
++-----------+---------------+-------+-------+-----+-------+-------+--------+-------+-------+--------+
+| dst       | both          | 8     | 1     | 1   | 1     | 1     | 1      | 1     | 1     | 1      |
+| src       | both          | 8     | 1     | 1   | 1     | 1     | 1      | 1     | 1     | 1      |
++-----------+---------------+-------+-------+-----+-------+-------+--------+-------+-------+--------+
+
+* TOP LEVEL CONTROL
++-----------+------------+-----------+
+| Interface | Type       | Ports     |
++-----------+------------+-----------+
+| ap_clk    | clock      | ap_clk    |
+| ap_rst_n  | reset      | ap_rst_n  |
+| interrupt | interrupt  | interrupt |
+| ap_ctrl   | ap_ctrl_hs |           |
++-----------+------------+-----------+
+
+
+================================================================
+== SW I/O Information
+================================================================
+* Top Function Arguments
++---------------+-----------+--------------------------------------------+
+| Argument      | Direction | Datatype                                   |
++---------------+-----------+--------------------------------------------+
+| src           | in        | stream<hls::axis<ap_uint<8>, 1, 1, 1>, 0>& |
+| dst           | out       | stream<hls::axis<ap_uint<8>, 1, 1, 1>, 0>& |
+| filter_select | in        | ap_uint<3>                                 |
+| threshold_val | in        | ap_uint<8>                                 |
+| width         | in        | ap_uint<16>                                |
+| height        | in        | ap_uint<16>                                |
++---------------+-----------+--------------------------------------------+
+
+* SW-to-HW Mapping
++---------------+---------------+-----------+-----------------------------------------+
+| Argument      | HW Interface  | HW Type   | HW Info                                 |
++---------------+---------------+-----------+-----------------------------------------+
+| src           | src           | interface |                                         |
+| dst           | dst           | interface |                                         |
+| filter_select | s_axi_control | register  | name=filter_select offset=0x10 range=32 |
+| threshold_val | s_axi_control | register  | name=threshold_val offset=0x18 range=32 |
+| width         | s_axi_control | register  | name=width offset=0x20 range=32         |
+| height        | s_axi_control | register  | name=height offset=0x28 range=32        |
++---------------+---------------+-----------+-----------------------------------------+
+
+
+================================================================
+== Bind Op Report
+================================================================
++------------------------------------------+-----+--------+--------------+-----+--------+---------+
+| Name                                     | DSP | Pragma | Variable     | Op  | Impl   | Latency |
++------------------------------------------+-----+--------+--------------+-----+--------+---------+
+| + image_pros                             | 1   |        |              |     |        |         |
+|   sub_i_i_fu_182_p2                      | -   |        | sub_i_i      | add | fabric | 0       |
+|   mul_mul_16ns_16ns_32_4_1_U26           | 1   |        | mul_ln112    | mul | dsp48  | 3       |
+|  + image_pros_Pipeline_ROW_LOOP_COL_LOOP | 0   |        |              |     |        |         |
+|    add_ln1027_fu_353_p2                  | -   |        | add_ln1027   | add | fabric | 0       |
+|    add_ln144_fu_370_p2                   | -   |        | add_ln144    | add | fabric | 0       |
+|    add_ln840_fu_570_p2                   | -   |        | add_ln840    | add | fabric | 0       |
+|    add_ln840_1_fu_588_p2                 | -   |        | add_ln840_1  | add | fabric | 0       |
+|    sum_V_5_fu_598_p2                     | -   |        | sum_V_5      | sub | fabric | 0       |
+|    tmp8_fu_656_p2                        | -   |        | tmp8         | sub | fabric | 0       |
+|    tmp11_fu_674_p2                       | -   |        | tmp11        | sub | fabric | 0       |
+|    add_ln840_2_fu_701_p2                 | -   |        | add_ln840_2  | add | fabric | 0       |
+|    gx_V_2_fu_711_p2                      | -   |        | gx_V_2       | sub | fabric | 0       |
+|    gy_V_3_fu_733_p2                      | -   |        | gy_V_3       | sub | fabric | 0       |
+|    add_ln840_5_fu_743_p2                 | -   |        | add_ln840_5  | add | fabric | 0       |
+|    abs_gx_V_fu_769_p2                    | -   |        | abs_gx_V     | sub | fabric | 0       |
+|    abs_gy_V_fu_795_p2                    | -   |        | abs_gy_V     | sub | fabric | 0       |
+|    magnitude_V_fu_821_p2                 | -   |        | magnitude_V  | add | fabric | 0       |
+|    add_ln186_fu_843_p2                   | -   |        | add_ln186    | add | fabric | 0       |
+|    tmp25_fu_861_p2                       | -   |        | tmp25        | add | fabric | 0       |
+|    tmp66_fu_871_p2                       | -   |        | tmp66        | add | fabric | 0       |
+|    add_ln840_7_fu_889_p2                 | -   |        | add_ln840_7  | add | fabric | 0       |
+|    add_ln840_9_fu_901_p2                 | -   |        | add_ln840_9  | add | fabric | 0       |
+|    add_ln840_10_fu_911_p2                | -   |        | add_ln840_10 | add | fabric | 0       |
+|    add_ln148_fu_491_p2                   | -   |        | add_ln148    | add | fabric | 0       |
++------------------------------------------+-----+--------+--------------+-----+--------+---------+
+
+
+================================================================
+== Bind Storage Report
+================================================================
++--------------------------------------------------------------------------------+------+------+--------+---------------------------------------------------------------------------+---------+------+---------+
+| Name                                                                           | BRAM | URAM | Pragma | Variable                                                                  | Storage | Impl | Latency |
++--------------------------------------------------------------------------------+------+------+--------+---------------------------------------------------------------------------+---------+------+---------+
+| + image_pros                                                                   | 2    | 0    |        |                                                                           |         |      |         |
+|  + image_pros_Pipeline_ROW_LOOP_COL_LOOP                                       | 2    | 0    |        |                                                                           |         |      |         |
+|    image_pros_stream_stream_ap_uint_ap_uint_ap_uint_ap_uint_16_line_buffer_1_U | 1    | -    |        | image_pros_stream_stream_ap_uint_ap_uint_ap_uint_ap_uint_16_line_buffer_1 | ram_s2p | auto | 1       |
+|    image_pros_stream_stream_ap_uint_ap_uint_ap_uint_ap_uint_16_line_buffer_U   | 1    | -    |        | image_pros_stream_stream_ap_uint_ap_uint_ap_uint_ap_uint_16_line_buffer   | ram_1p  | auto | 1       |
++--------------------------------------------------------------------------------+------+------+--------+---------------------------------------------------------------------------+---------+------+---------+
+
+
+================================================================
+== Pragma Report
+================================================================
+* Valid Pragma Syntax
++-----------------+---------------------------------------------+----------------------------------------------------------------------+
+| Type            | Options                                     | Location                                                             |
++-----------------+---------------------------------------------+----------------------------------------------------------------------+
+| inline          |                                             | image_pros/src/image_processing.cpp:26 in apply_sobel                |
+| unroll          |                                             | image_pros/src/image_processing.cpp:34 in apply_sobel                |
+| unroll          |                                             | image_pros/src/image_processing.cpp:36 in apply_sobel                |
+| inline          |                                             | image_pros/src/image_processing.cpp:62 in apply_gaussian             |
+| unroll          |                                             | image_pros/src/image_processing.cpp:68 in apply_gaussian             |
+| unroll          |                                             | image_pros/src/image_processing.cpp:70 in apply_gaussian             |
+| inline          |                                             | image_pros/src/image_processing.cpp:86 in apply_sharpen              |
+| unroll          |                                             | image_pros/src/image_processing.cpp:92 in apply_sharpen              |
+| unroll          |                                             | image_pros/src/image_processing.cpp:94 in apply_sharpen              |
+| interface       | axis port=src                               | image_pros/src/image_processing.cpp:123 in image_pros, src           |
+| interface       | axis port=dst                               | image_pros/src/image_processing.cpp:124 in image_pros, dst           |
+| interface       | s_axilite port=filter_select bundle=control | image_pros/src/image_processing.cpp:125 in image_pros, filter_select |
+| interface       | s_axilite port=threshold_val bundle=control | image_pros/src/image_processing.cpp:126 in image_pros, threshold_val |
+| interface       | s_axilite port=width bundle=control         | image_pros/src/image_processing.cpp:127 in image_pros, width         |
+| interface       | s_axilite port=height bundle=control        | image_pros/src/image_processing.cpp:128 in image_pros, height        |
+| interface       | s_axilite port=return bundle=control        | image_pros/src/image_processing.cpp:129 in image_pros, return        |
+| array_partition | variable=line_buffer complete dim=1         | image_pros/src/image_processing.cpp:135 in image_pros, line_buffer   |
+| array_partition | variable=window complete dim=0              | image_pros/src/image_processing.cpp:138 in image_pros, window        |
+| loop_tripcount  | min=480 max=480                             | image_pros/src/image_processing.cpp:145 in image_pros                |
+| loop_tripcount  | min=640 max=640                             | image_pros/src/image_processing.cpp:149 in image_pros                |
+| pipeline        | II=1                                        | image_pros/src/image_processing.cpp:150 in image_pros                |
+| unroll          |                                             | image_pros/src/image_processing.cpp:158 in image_pros                |
++-----------------+---------------------------------------------+----------------------------------------------------------------------+
+
+

@@ -1,0 +1,73 @@
+# ============================================
+# Vivado HLS / Vitis HLS Generated Files
+# ============================================
+solution1/csim/build/
+solution1/sim/
+solution1/syn/verilog/*.dat
+solution1/syn/vhdl/*.dat
+solution1/impl/ip/hdl/
+solution1/impl/ip/drivers/
+solution1/impl/ip/example/
+solution1/impl/ip/subcore/
+solution1/impl/ip/xgui/
+solution1/impl/ip/doc/
+solution1/impl/ip/misc/
+solution1/impl/ip/constraints/
+solution1/impl/misc/
+solution1/impl/verilog/
+solution1/impl/vhdl/
+solution1/.autopilot/
+*.log
+*.jou
+
+# ============================================
+# Vivado Project Files
+# ============================================
+*.xpr
+*.runs/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.sim/
+*.gen/
+.Xil/
+webtalk*.jou
+webtalk*.log
+vivado*.jou
+vivado*.log
+*.wdb
+*.wcfg
+
+# ============================================
+# IDE / Editor Files
+# ============================================
+.apc/
+.settings/
+.cproject
+.project
+*.vitis_hls_log*.xml
+.vitis_hls_log_all.xml
+hls.app
+*.aps
+
+# ============================================
+# Build Outputs (keep bitstream optional)
+# ============================================
+*.bin
+export.zip
+
+# ============================================
+# OS Generated Files
+# ============================================
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# ============================================
+# Temporary Files
+# ============================================
+*.tmp
+*.temp
+*.bak
