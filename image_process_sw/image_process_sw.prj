@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sdkproject:SdkProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdkproject="http://www.xilinx.com/sdkproject" name="image_process_sw" location="/home/risabh/workspace/image_process_sw" platform="/home/risabh/workspace/image_process_platform/export/image_process_platform/image_process_platform.xpfm" platformUID="xilinx:pynq-z2::0.0(custom)" systemProject="image_process_sw_system" sysConfig="image_process_platform" runtime="C/C++" cpu="standalone_domain" cpuInstance="microblaze_0" os="standalone" mssSignature="41ec96298e6f3ed707ccded9a9f66f88">
+  <configuration name="Debug" id="xilinx.gnu.mb.exe.debug.1363652344" dirty="true">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+    <lastBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <configuration name="Release" id="xilinx.gnu.mb.exe.release.793697178" dirty="true">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <template appTemplateName="empty_application"/>
+</sdkproject:SdkProject>

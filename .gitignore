@@ -21,9 +21,8 @@ solution1/.autopilot/
 *.jou
 
 # ============================================
-# Vivado Project Files
+# Vivado Project Files (keep .xpr for reference)
 # ============================================
-*.xpr
 *.runs/
 *.cache/
 *.hw/
@@ -37,6 +36,33 @@ vivado*.jou
 vivado*.log
 *.wdb
 *.wcfg
+
+# ============================================
+# Vitis Platform Build Artifacts
+# ============================================
+image_process_platform/.log/
+image_process_platform/logs/
+image_process_platform/export/
+image_process_platform/microblaze_0/
+image_process_platform/resources/
+
+# ============================================
+# Vitis Application Build Artifacts
+# ============================================
+image_process_sw/Debug/
+image_process_sw/_ide/
+image_process_sw_system/Debug/
+
+# ============================================
+# Vivado Project Build Artifacts
+# ============================================
+image_proscess/image_proscess.cache/
+image_proscess/image_proscess.gen/
+image_proscess/image_proscess.hw/
+image_proscess/image_proscess.ip_user_files/
+image_proscess/image_proscess.runs/
+image_proscess/image_proscess.sim/
+image_proscess/image_process/
 
 # ============================================
 # IDE / Editor Files
